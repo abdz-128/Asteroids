@@ -1,10 +1,12 @@
 import math
 import pygame
 
+from src.asset_path import paths
+
 # Player class
 class Player(object):
-    def __init__(self, SCREEN_HEIGHT, SCREEN_WIDTH, paths):
-        self.img = pygame.transform.scale(pygame.image.load(paths), (70, 70))
+    def __init__(self, SCREEN_HEIGHT, SCREEN_WIDTH):
+        self.img = pygame.transform.scale(pygame.image.load(paths['player_ship']), (70, 70))
         self.player_width, self.player_height = self.img.get_width(), self.img.get_height()
         self.x, self.y = SCREEN_WIDTH//2, SCREEN_HEIGHT//2
 
@@ -108,6 +110,7 @@ class Bullet(object):
         self.bullet_width, self.bullet_height = 4, 4
         self.cosine, self.sine = player.cosine, player.sine
         self.speed_x, self.speed_y = self.cosine * 10, -self.sine * 10
+        self.width, self.height = self.bullet_width, self.bullet_height
 
     def shoot(self):
         self.x += self.speed_x
