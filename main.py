@@ -17,6 +17,7 @@ clock = pygame.time.Clock()
 background = pygame.transform.scale(pygame.image.load(paths['background']), (SCREEN_HEIGHT, SCREEN_WIDTH))
 gameover = False
 lives = 3
+score = 0
 
 
 # Redraw function
@@ -25,6 +26,7 @@ def redraw_game_window(player, player_bullets, asteroids):
     font = pygame.font.SysFont('comicsans', 30)
     lives_text = font.render(f'Lives: {lives}', 1, (255, 255, 255))
     play_again = font.render('Press any key to play again', 1, (255, 255, 255))
+    score_text = font.render(f'Score: {score}', 1, (255, 255, 255))
 
     player.draw(SCREEN)
     for a in asteroids:
@@ -34,6 +36,7 @@ def redraw_game_window(player, player_bullets, asteroids):
     if gameover:
         SCREEN.blit(play_again, (SCREEN_HEIGHT // 2 - play_again.get_width() // 2, SCREEN_WIDTH // 2 - play_again.get_height() // 2))
     SCREEN.blit(lives_text, (10, 10))
+    SCREEN.blit(score_text, (10, 50))
     pygame.display.update()
 
 
@@ -41,6 +44,7 @@ def redraw_game_window(player, player_bullets, asteroids):
 def main():
     global gameover
     global lives
+    global score
     player = Player(SCREEN_HEIGHT, SCREEN_WIDTH)
     player_bullets = []
     asteroids = []
@@ -58,7 +62,7 @@ def main():
                 asteroids.append(Asteroids(ran, SCREEN_WIDTH, SCREEN_HEIGHT))
 
             player.update_location(SCREEN_WIDTH, SCREEN_HEIGHT)
-            gameover, lives = player_movement(pygame, player, player_bullets, asteroids, lives)
+            gameover, lives, score = player_movement(pygame, player, player_bullets, asteroids, lives, score)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -70,6 +74,7 @@ def main():
                     else:
                         gameover = False
                         lives = 3
+                        score = 0
                         asteroids.clear()
 
         redraw_game_window(player, player_bullets, asteroids)
