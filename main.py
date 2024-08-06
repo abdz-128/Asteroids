@@ -6,6 +6,8 @@ from src.Player.player import Player, Bullet
 from src.Asteroids.asteroids import Asteroids
 from src.Player.player_movement import player_movement
 
+pygame.init()
+
 # Screen dimensions
 SCREEN_HEIGHT, SCREEN_WIDTH = 900, 650
 SCREEN = pygame.display.set_mode((SCREEN_HEIGHT, SCREEN_WIDTH))
@@ -20,11 +22,18 @@ lives = 3
 # Redraw function
 def redraw_game_window(player, player_bullets, asteroids):
     SCREEN.blit(background, (0, 0))
+    font = pygame.font.SysFont('comicsans', 30)
+    lives_text = font.render(f'Lives: {lives}', 1, (255, 255, 255))
+    play_again = font.render('Press any key to play again', 1, (255, 255, 255))
+
     player.draw(SCREEN)
     for a in asteroids:
         a.draw(SCREEN)
     for b in player_bullets:
         b.draw(SCREEN)
+    if gameover:
+        SCREEN.blit(play_again, (SCREEN_HEIGHT // 2 - play_again.get_width() // 2, SCREEN_WIDTH // 2 - play_again.get_height() // 2))
+    SCREEN.blit(lives_text, (10, 10))
     pygame.display.update()
 
 
@@ -55,8 +64,13 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE and not gameover:
-                    player_bullets.append(Bullet(player))
+                if event.key == pygame.K_SPACE:
+                    if not gameover:
+                        player_bullets.append(Bullet(player))
+                    else:
+                        gameover = False
+                        lives = 3
+                        asteroids.clear()
 
         redraw_game_window(player, player_bullets, asteroids)
     pygame.quit()
