@@ -1,5 +1,4 @@
 import random
-
 import pygame
 
 from src.asset_path import paths
@@ -15,15 +14,15 @@ clock = pygame.time.Clock()
 
 background = pygame.transform.scale(pygame.image.load(paths['background']), (SCREEN_HEIGHT, SCREEN_WIDTH))
 gameover = False
+lives = 3
+
 
 # Redraw function
 def redraw_game_window(player, player_bullets, asteroids):
     SCREEN.blit(background, (0, 0))
     player.draw(SCREEN)
-
     for a in asteroids:
         a.draw(SCREEN)
-
     for b in player_bullets:
         b.draw(SCREEN)
     pygame.display.update()
@@ -32,6 +31,7 @@ def redraw_game_window(player, player_bullets, asteroids):
 # Main function
 def main():
     global gameover
+    global lives
     player = Player(SCREEN_HEIGHT, SCREEN_WIDTH)
     player_bullets = []
     asteroids = []
@@ -49,15 +49,14 @@ def main():
                 asteroids.append(Asteroids(ran, SCREEN_WIDTH, SCREEN_HEIGHT))
 
             player.update_location(SCREEN_WIDTH, SCREEN_HEIGHT)
-            player_movement(pygame, player, player_bullets, asteroids)
+            gameover, lives = player_movement(pygame, player, player_bullets, asteroids, lives)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
-                    if not gameover:
-                        player_bullets.append(Bullet(player))
+                if event.key == pygame.K_SPACE and not gameover:
+                    player_bullets.append(Bullet(player))
 
         redraw_game_window(player, player_bullets, asteroids)
     pygame.quit()

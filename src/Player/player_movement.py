@@ -1,7 +1,11 @@
+# player_movement.py
 from src.Asteroids.asteroids import Asteroids
 
+
 # Movement of the player
-def player_movement(pygame, player, player_bullets, asteroids):
+def player_movement(pygame, player, player_bullets, asteroids, lives):
+    gameover = False
+
     for b in player_bullets:
         b.shoot()
         if b.y < 0:
@@ -10,6 +14,15 @@ def player_movement(pygame, player, player_bullets, asteroids):
     for a in asteroids:
         a.x += a.x_velocity
         a.y += a.y_velocity
+
+        if a.x <= player.x <= a.x + a.width or a.x <= player.x + player.player_width <= a.x + a.width:
+            if a.y <= player.y <= a.y + a.height or a.y + a.height <= player.y + player.player_height <= a.y + a.height:
+                lives -= 1
+                asteroids.pop(asteroids.index(a))
+                if lives <= 0:
+                    gameover = True
+                    return gameover, lives
+                break
 
         # Bullet collision
         for b in player_bullets:
@@ -42,3 +55,4 @@ def player_movement(pygame, player, player_bullets, asteroids):
     if keys[pygame.K_DOWN]:
         player.move_backward()
 
+    return gameover, lives
